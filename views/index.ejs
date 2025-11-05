@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Личный кошелёк</title>
+</head>
+<body>
+    <h1>Ваши счета</h1>
+    <% users.forEach(user => { %>
+        <h2><%= user.name %></h2>
+        <ul>
+        <% user.Accounts.forEach(acc => { %>
+            <li>Счет <%= acc.id %>: <%= acc.balance %> р.</li>
+        <% }) %>
+        </ul>
+    <% }) %>
+
+    <h2>Пополнить кошелек</h2>
+    <form action="/wallet/deposit" method="POST">
+        <label>Выберите счет:</label>
+        <select name="accountId" required>
+            <% users.forEach(user => { %>
+                <% user.Accounts.forEach(acc => { %>
+                    <option value="<%= acc.id %>"><%= user.name %> — Счёт №<%= acc.id %> (Баланс: <%= acc.balance %>р)</option>
+                <% }) %>
+            <% }) %>
+        </select>
+        <input type="number" name="amount" placeholder="Сумма" required>
+        <button type="submit">Пополнить</button>
+    </form>
+
+    <h2>Покупки</h2>
+    <% users.forEach(user => { %>
+        <% user.Accounts.forEach(acc => { %>
+            <h3>Счёт №<%= acc.id %> (Баланс: <%= acc.balance %>р)</h3>
+            
+            <form action="/wallet/buy" method="POST" style="margin-bottom: 10px;">
+                <input type="hidden" name="accountId" value="<%= acc.id %>">
+                <input type="hidden" name="item" value="Котика">
+                <input type="hidden" name="cost" value="500">
+                <button type="submit">Купить котика 500р</button>
+            </form>
+
+            <form action="/wallet/buy" method="POST" style="margin-bottom: 10px;">
+                <input type="hidden" name="accountId" value="<%= acc.id %>">
+                <input type="hidden" name="item" value="2 котиков">
+                <input type="hidden" name="cost" value="999">
+                <button type="submit">Купить 2 котиков 999р</button>
+            </form>
+
+            <form action="/wallet/buy" method="POST" style="margin-bottom: 10px;">
+                <input type="hidden" name="accountId" value="<%= acc.id %>">
+                <input type="hidden" name="item" value="Не котика">
+                <input type="hidden" name="cost" value="1000000">
+                <button type="submit">Купить не котика 1000000р</button>
+            </form>
+
+            <form action="/wallet/buy" method="POST" style="margin-bottom: 10px;">
+                <input type="hidden" name="accountId" value="<%= acc.id %>">
+                <input type="hidden" name="item" value="Дом">
+                <input type="hidden" name="cost" value="1">
+                <button type="submit">Купить дом 1р</button>
+            </form>
+        <% }) %>
+    <% }) %>
+
+    <h2>Перевод</h2>
+    <form method="POST" action="/wallet/transfer">
+        <label>Со счёта:</label>
+        <select name="fromId" required>
+            <% users.forEach(user => { %>
+                <% user.Accounts.forEach(acc => { %>
+                    <option value="<%= acc.id %>"><%= user.name %> — Счёт №<%= acc.id %> (Баланс: <%= acc.balance %>р)</option>
+                <% }) %>
+            <% }) %>
+        </select>
+        <br>
+        <label>На счёт:</label>
+        <select name="toId" required>
+            <% users.forEach(user => { %>
+                <% user.Accounts.forEach(acc => { %>
+                    <option value="<%= acc.id %>"><%= user.name %> — Счёт №<%= acc.id %> (Баланс: <%= acc.balance %>р)</option>
+                <% }) %>
+            <% }) %>
+        </select>
+        <br>
+        <input type="number" name="amount" placeholder="Сумма перевода" required>
+        <button type="submit">Перевести</button>
+    </form>
+
+    <h2>История операций</h2>
+    <ul>
+        <% transactions.forEach(t => { %>
+            <li><%= t.type %> — <%= t.amount %> р.</li>
+        <% }) %>
+    </ul>
+</body>
+</html>
